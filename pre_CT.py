@@ -21,9 +21,9 @@ import argparse
 
 # set up the parser
 parser = argparse.ArgumentParser(description='preprocess CT images')
-parser.add_argument('-i', '--nii_path', type=str, default='data/FLARE22Train/images', help='path to the nii images')
-parser.add_argument('-gt', '--gt_path', type=str, default='data/FLARE22Train/labels', help='path to the ground truth',)
-parser.add_argument('-o', '--npz_path', type=str, default='data/Npz_files', help='path to save the npz files')
+parser.add_argument('-i', '--nii_path', type=str, default='/media/icml/H4T/DATASET/MeSAM/data/FLARE22Train/images', help='path to the nii images')
+parser.add_argument('-gt', '--gt_path', type=str, default='/media/icml/H4T/DATASET/MeSAM/data/FLARE22Train/labels', help='path to the ground truth',)
+parser.add_argument('-o', '--npz_path', type=str, default='/media/icml/H4T/DATASET/MeSAM/data/Npz_files', help='path to save the npz files')
 
 parser.add_argument('--image_size', type=int, default=256, help='image size')
 parser.add_argument('--modality', type=str, default='CT', help='modality')
