@@ -20,10 +20,11 @@ from segment_anything.utils.transforms import ResizeLongestSide
 import argparse
 
 # set up the parser
+dataset_dir="/media/icml/H4T/DATASET/MeSAM/"
 parser = argparse.ArgumentParser(description='preprocess CT images')
-parser.add_argument('-i', '--nii_path', type=str, default='/media/icml/H4T/DATASET/MeSAM/data/FLARE22Train/images', help='path to the nii images')
-parser.add_argument('-gt', '--gt_path', type=str, default='/media/icml/H4T/DATASET/MeSAM/data/FLARE22Train/labels', help='path to the ground truth',)
-parser.add_argument('-o', '--npz_path', type=str, default='/media/icml/H4T/DATASET/MeSAM/data/Npz_files', help='path to save the npz files')
+parser.add_argument('-i', '--nii_path', type=str, default=dataset_dir + 'data/FLARE22Train/images', help='path to the nii images')
+parser.add_argument('-gt', '--gt_path', type=str, default=dataset_dir +'data/FLARE22Train/labels', help='path to the ground truth',)
+parser.add_argument('-o', '--npz_path', type=str, default=dataset_dir + 'data/Npz_files', help='path to save the npz files')
 
 parser.add_argument('--image_size', type=int, default=256, help='image size')
 parser.add_argument('--modality', type=str, default='CT', help='modality')
@@ -32,7 +33,7 @@ parser.add_argument('--img_name_suffix', type=str, default='_0000.nii.gz', help=
 parser.add_argument('--label_id', type=int, default=9, help='label id')
 parser.add_argument('--prefix', type=str, default='CT_Abd-Gallbladder_', help='prefix')
 parser.add_argument('--model_type', type=str, default='vit_b', help='model type')
-parser.add_argument('--checkpoint', type=str, default='work_dir/SAM/sam_vit_b_01ec64.pth', help='checkpoint')
+parser.add_argument('--checkpoint', type=str, default=dataset_dir + 'work_dir/SAM/sam_vit_b_01ec64.pth', help='checkpoint')
 parser.add_argument('--device', type=str, default='cuda:0', help='device')
 # seed
 parser.add_argument('--seed', type=int, default=2023, help='random seed')
@@ -106,8 +107,8 @@ def preprocess_ct(gt_path, nii_path, gt_name, image_name, label_id, image_size, 
 
 
 #%% prepare the save path
-save_path_tr = join(args.npz_path, prefix, 'train')
-save_path_ts = join(args.npz_path, prefix, 'test')
+save_path_tr = join(args.npz_path, prefix, 'preview_png')
+save_path_ts = join(args.npz_path, prefix, 'preview_png')
 os.makedirs(save_path_tr, exist_ok=True)
 os.makedirs(save_path_ts, exist_ok=True)
 
@@ -131,7 +132,7 @@ for name in tqdm(train_names):
         gt_idx = gts[idx,:,:]
         bd = segmentation.find_boundaries(gt_idx, mode='inner')
         img_idx[bd, :] = [255, 0, 0]
-        io.imsave(save_path_tr + '.png', img_idx, check_contrast=False)
+        io.imsave(join(save_path_tr , name.split('.nii.gz')[0] +'.png'), img_idx, check_contrast=False)
 
 # save testing data
 for name in tqdm(test_names):
@@ -150,4 +151,4 @@ for name in tqdm(test_names):
         gt_idx = gts[idx,:,:]
         bd = segmentation.find_boundaries(gt_idx, mode='inner')
         img_idx[bd, :] = [255, 0, 0]
-        io.imsave(save_path_ts + '.png', img_idx, check_contrast=False)
+        io.imsave(join(save_path_ts , name.split('.nii.gz')[0] + '.png'), img_idx, check_contrast=False)
